@@ -14,7 +14,9 @@ if [ "$(which "$1")" = "/usr/local/bin/start-singleuser.sh" ]; then
   #git clone https://gist.github.com/parente/facb555dfbae28e817e0 \
   #  --depth 1 \
   #  "$NOTEBOOK_DIR/notebook_count" || true
-  cp -r /home/$NB_USER/workshop/notebook/ /home/$NB_USER/examples || true
+
+  mkdir /home/$NB_USER/labs/ || true
+  cp -r --no-clobber --no-target-directory /home/$NB_USER/workshop/notebook-source/ /home/$NB_USER/labs/ || true
 fi
 
 # Run the command provided
