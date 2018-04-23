@@ -18,4 +18,5 @@ COPY ./secrets/*.key $SSL_KEY
 RUN chmod 700 /srv/jupyterhub/secrets && \
     chmod 600 /srv/jupyterhub/secrets/*
 
+# Uncomment below if you want to limit users who can connect to environment
 #COPY ./userlist /srv/jupyterhub/userlist

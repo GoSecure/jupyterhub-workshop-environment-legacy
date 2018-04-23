@@ -79,6 +79,7 @@ c.JupyterHub.admin_access = True
 # ref: https://github.com/jupyterhub/jupyterhub/blob/master/docs/source/troubleshooting.md#how-do-i-set-up-jupyterhub-for-a-workshop-when-users-are-not-known-ahead-of-time
 admin.add('obilodeau')
 admin.add('masarah')
+admin.add('h3xstream')
 
 # previous code
 #pwd = os.path.dirname(__file__)
