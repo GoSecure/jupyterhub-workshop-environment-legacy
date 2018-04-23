@@ -8,7 +8,7 @@ FROM jupyter/scipy-notebook:latest
 # Install mitmproxy dependencies, tshark, gnu parallel (requires PPA), a python2 env
 USER root
 RUN apt-get update && \
-    apt-get install -y software-properties-common python3-dev python3-pip python-dev libffi-dev libssl-dev libjpeg8-dev tshark && \
+    apt-get install -y software-properties-common python3-dev python3-pip python-dev libffi-dev libssl-dev libjpeg8-dev tshark manpages man-db whois netcat-traditional dnsutils && \
     add-apt-repository ppa:jonathonf/backports && \
     apt-get update && \
     apt-get install -y parallel && \
@@ -21,7 +21,7 @@ RUN apt-get update && \
 
 # Install packages in default Python 3 environment
 RUN pip install \
-  beautifulsoup4==4.4.* mitmproxy
+  beautifulsoup4==4.4.* mitmproxy plotly
 
 # Install packages in Python 2 environment
 # TODO test latest mitmproxy (is it really only python3?)
