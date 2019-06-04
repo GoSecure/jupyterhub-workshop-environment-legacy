@@ -21,12 +21,12 @@ RUN apt-get update && \
 
 # Install packages in default Python 3 environment
 RUN pip install \
-  beautifulsoup4==4.4.* mitmproxy plotly
+  beautifulsoup4==4.4.* mitmproxy==3.0.4 plotly
 
 # Install packages in Python 2 environment
 # TODO test latest mitmproxy (is it really only python3?)
-RUN $CONDA_DIR/envs/python2/bin/pip install \
-  beautifulsoup4==4.4.* mitmproxy==0.17
+#RUN $CONDA_DIR/envs/python2/bin/pip install \
+#  beautifulsoup4==4.4.* mitmproxy==0.17
 #
 ## Use custom startup script
 USER root
