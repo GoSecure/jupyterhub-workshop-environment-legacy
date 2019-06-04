@@ -1,0 +1,39 @@
+= README
+
+These are badly formatted notes on how to build the environment
+
+  make notebook_image
+
+  docker-compose up
+  cd examples/custom-notebook-server/
+  vim Dockerfile
+  vim docker-entrypoint.sh
+  docker build -t workshop-notebook .
+  cd ../../
+  make notebook_image
+  make build
+  ...
+  docker-compose up
+
+
+== Important files for the workshop
+
+  zip labs/ -> /srv/workshop/notebook-source
+  unzip all minus solutions -> /srv/workshop
+
+make sure directories are traversable and stuff is readable to world otherwise
+jupyter will not display it
+
+== Activate letsencrypt
+
+* install certbot
+* create certs using certbot and its temp webserver (shutdown docker-compose
+  environment before)
+
+    certbot certonly --standalone -d botnet-workshop.gosecure.net
+    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub
+    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub
+    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/privkey.pem secrets/jupyterhub.key
+
+* Update OAUTH_CALLBACK_URL to link to domain / HTTPS in
+  `secrets/oauth.env` and adjust github config
