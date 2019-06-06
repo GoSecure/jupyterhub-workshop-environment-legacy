@@ -16,7 +16,7 @@ if [ "$(which "$1")" = "/usr/local/bin/start-singleuser.sh" ]; then
   #  "$NOTEBOOK_DIR/notebook_count" || true
 
   mkdir /home/$NB_USER/labs/ || true
-  cp -r --no-clobber --no-target-directory /home/$NB_USER/workshop/notebook-source/ /home/$NB_USER/labs/ || true
+  cp -r --no-clobber --no-target-directory /home/$NB_USER/workshop/labs-source/ /home/$NB_USER/labs/ || true
 fi
 
 # Run the command provided

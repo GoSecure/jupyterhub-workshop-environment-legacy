@@ -1,0 +1,5 @@
+= TODO
+
+* split hardcoded admin users in an external secret file
+* add exposed network option
+* vagrant provision should install make

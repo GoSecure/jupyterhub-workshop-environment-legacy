@@ -10,18 +10,18 @@ This is an example of using a custom Jupyter Notebook server Docker image with J
 Build and tag the image using the `Dockerfile` in this directory.
 
 ```
-docker build -t my-custom-notebook .
+docker build -t workshop-notebook .
 ```
 
 ## Run JupyterHub Container
 
-To have JupyterHub spawn the `my-custom-notebook` image for single-user Notebook
+To have JupyterHub spawn the `workshop-notebook` image for single-user Notebook
 servers, set the `DOCKER_NOTEBOOK_IMAGE` environment variable to the image name
 when you run the JupyterHub container.  For example, run the following
 **from the root directory** of this repository:
 
 ```
-export DOCKER_NOTEBOOK_IMAGE=my-custom-notebook
+export DOCKER_NOTEBOOK_IMAGE=workshop-notebook
 
 # bring down the JupyterHub container, if running
 docker-compose down

@@ -1,39 +1,98 @@
 = README
 
+== Setup Instructions
+
+Spin the droplet using vagrant. Make sure to define these secrets in
+`secrets/digitalocean.env`:
+
+    DO_DROPLET_NAME=jupyterlab-workshop
+    DO_SSH_PRIVATE_KEY=<path to ssh private key set-up with digital ocean>
+    DO_TOKEN=<digital ocean token>
+    # digital ocean region names like: nyc3, lon1, etc.
+    DO_REGION=fra1
+    # for setup, 4 CPU and 8GiB of RAM is nice, scale down after
+    DO_SIZE=c-4
+    DO_SSH_KEY_NAME=<ssh key nickname in digital ocean>
+
+To spin the droplet:
+
+    vagrant up
+
+Then to finish the setup of the host:
+
+    vagrant ssh
+
+
 These are badly formatted notes on how to build the environment
 
-  make notebook_image
+  make
 
-  docker-compose up
+If you are using a custom notebook (its by default here, see `.env` for name),
+you need to build it and rebuild notebook_image:
+
   cd examples/custom-notebook-server/
-  vim Dockerfile
-  vim docker-entrypoint.sh
+  # <change what you need or use another examples>
   docker build -t workshop-notebook .
   cd ../../
   make notebook_image
   make build
-  ...
-  docker-compose up
 
+Setup GitHub's OAuth
 
-== Important files for the workshop
+// FIXME instructions du readme.upstream
 
-  zip labs/ -> /srv/workshop/notebook-source
-  unzip all minus solutions -> /srv/workshop
+https://github.com/organizations/GoSecure/settings/applications/
 
-make sure directories are traversable and stuff is readable to world otherwise
-jupyter will not display it
-
-== Activate letsencrypt
+Lets encrypt
 
 * install certbot
 * create certs using certbot and its temp webserver (shutdown docker-compose
   environment before)
 
-    certbot certonly --standalone -d botnet-workshop.gosecure.net
-    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub
-    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub
+    certbot certonly --standalone -d <domain-name>
+    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub.crt
     cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/privkey.pem secrets/jupyterhub.key
 
-* Update OAUTH_CALLBACK_URL to link to domain / HTTPS in
-  `secrets/oauth.env` and adjust github config
+Rebuild docker-compose with updated secrets and certs
+
+    make
+
+Everything should work:
+
+    docker-compose up
+
+Outdated
+  vim Dockerfile
+  vim docker-entrypoint.sh
+  docker build -t workshop-notebook .
+  make build
+  ...
+  docker-compose up
+
+== Optional: userlists
+
+// TODO
+
+== Optional: User Instances Exposed to the Internet
+
+// TODO
+
+== Special Workshop Files Overlay
+
+.Read-only shared with all participants
+
+All users will have access to a directory in their own homes (`/home/jovyan/`)
+called `workshop/` that will be mapped to the servers' `/srv/workshop/` via a
+docker volume.
+
+Changes made there will be reflected instantly.
+
+
+.Files for participants (writable and executable)
+
+On container creation, a directory called `labs/` will be created and
+populated from the servers' `/srv/workshop/labs-source/`.
+
+This will happen only once per user. If you need to re-populate it, you need
+to delete the user' files in his volume. These are visible under:
+`/var/lib/docker/volumes/jupyterhub-user-<username>/_data/`

@@ -1,3 +1,6 @@
 secrets/
 userlist
 .DS_Store
+
+# Vagrant
+/.vagrant/
