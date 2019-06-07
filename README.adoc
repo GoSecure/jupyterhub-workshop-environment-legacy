@@ -2,72 +2,71 @@
 
 == Setup Instructions
 
+=== Create the Server
+
 Spin the droplet using vagrant. Make sure to define these secrets in
 `secrets/digitalocean.env`:
 
-    DO_DROPLET_NAME=jupyterlab-workshop
+    DO_DROPLET_NAME=jupyterhub-workshop
+    DO_SSH_KEY_NAME=<ssh key nickname in digital ocean>
     DO_SSH_PRIVATE_KEY=<path to ssh private key set-up with digital ocean>
     DO_TOKEN=<digital ocean token>
     # digital ocean region names like: nyc3, lon1, etc.
     DO_REGION=fra1
     # for setup, 4 CPU and 8GiB of RAM is nice, scale down after
     DO_SIZE=c-4
-    DO_SSH_KEY_NAME=<ssh key nickname in digital ocean>
 
 To spin the droplet:
 
     vagrant up
 
-Then to finish the setup of the host:
+=== Setup on the Server
+
+Connect
 
     vagrant ssh
 
+Last few things
 
-These are badly formatted notes on how to build the environment
+    apt install make
+    cd /vagrant/
+    make
 
-  make
-
-If you are using a custom notebook (its by default here, see `.env` for name),
-you need to build it and rebuild notebook_image:
+If you are using a custom notebook (it is what's by default here, see `.env` for name), you need to build it and rebuild notebook_image:
 
   cd examples/custom-notebook-server/
-  # <change what you need or use another examples>
+  # <change what you need or use another example>
   docker build -t workshop-notebook .
   cd ../../
   make notebook_image
   make build
 
-Setup GitHub's OAuth
+=== Setup GitHub's OAuth
 
-// FIXME instructions du readme.upstream
+Follow the instructions under the *Authenticator setup* section of `README.upstream.md` file.
 
-https://github.com/organizations/GoSecure/settings/applications/
+We need to do it here: https://github.com/organizations/GoSecure/settings/applications/
 
-Lets encrypt
+=== Add TLS Certificates with Lets Encrypt
 
 * install certbot
-* create certs using certbot and its temp webserver (shutdown docker-compose
-  environment before)
+
+    apt install certbot
+
+* create certs using certbot and its temp webserver (make sure docker-compose
+  is shut down before)
 
     certbot certonly --standalone -d <domain-name>
-    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/fullchain.pem secrets/jupyterhub.crt
-    cp /etc/letsencrypt/live/botnet-workshop.gosecure.net/privkey.pem secrets/jupyterhub.key
+    cp /etc/letsencrypt/live/<domain-name>/fullchain.pem secrets/jupyterhub.crt
+    cp /etc/letsencrypt/live/<domain-name>/privkey.pem secrets/jupyterhub.key
 
-Rebuild docker-compose with updated secrets and certs
+* Rebuild docker-compose with updated secrets and certs
 
     make
 
 Everything should work:
 
     docker-compose up
-
-Outdated
-  vim Dockerfile
-  vim docker-entrypoint.sh
-  docker build -t workshop-notebook .
-  make build
-  ...
-  docker-compose up
 
 == Optional: userlists
 
