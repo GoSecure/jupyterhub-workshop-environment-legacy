@@ -72,15 +72,21 @@ c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
 )
 
 # Whitlelist users and admins
+# NOTE: an empty whitelist means everyone is allowed to create an account
 c.Authenticator.whitelist = whitelist = set()
 c.Authenticator.admin_users = admin = set()
 c.JupyterHub.admin_access = True
+pwd = os.path.dirname(__file__)
 
-# Set users by hand
-# ref: https://github.com/jupyterhub/jupyterhub/blob/master/docs/source/troubleshooting.md#how-do-i-set-up-jupyterhub-for-a-workshop-when-users-are-not-known-ahead-of-time
-admin.add('obilodeau')
-admin.add('masarah')
-admin.add('h3xstream')
+# Admin users list
+try:
+    with open(os.path.join(pwd, 'secrets', 'admins')) as f:
+        for line in f:
+            if not line:
+                continue
+            admin.add(line.rstrip())
+except FileNotFoundError:
+    pass
 
 # previous code
 #pwd = os.path.dirname(__file__)

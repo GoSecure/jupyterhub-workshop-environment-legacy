@@ -45,7 +45,13 @@ If you are using a custom notebook (it is what's by default here, see `.env` for
 
 Follow the instructions under the *Authenticator setup* section of `README.upstream.md` file.
 
-We need to do it here: https://github.com/organizations/GoSecure/settings/applications/
+Our GitHub OAuth should be done under here: https://github.com/organizations/GoSecure/settings/applications/
+
+By default our setup is open to anyone to create an account like for an open
+workshop with no pre-registrations (different options available below). Setup
+the users with admin privileges in advance by writing the github usernames to
+the `secrets/admins` file (one per line).
+
 
 === Add TLS Certificates with Lets Encrypt
 
@@ -73,6 +79,10 @@ Everything should work:
 // TODO
 
 == Optional: User Instances Exposed to the Internet
+
+// TODO
+
+== Optional: Stop Open Registrations
 
 // TODO
 

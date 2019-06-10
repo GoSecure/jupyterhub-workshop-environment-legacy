@@ -46,7 +46,6 @@ else
 endif
 
 # Use this line below if you plan on using a list of authorized github users
-#check-files: userlist $(cert_files) secrets/oauth.env secrets/postgres.env
 check-files: $(cert_files) secrets/oauth.env secrets/postgres.env
 
 pull:
