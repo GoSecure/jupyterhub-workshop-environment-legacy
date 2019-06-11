@@ -19,5 +19,4 @@ RUN chmod 700 /srv/jupyterhub/secrets && \
     chmod 600 /srv/jupyterhub/secrets/*
 
 # User management
-COPY ./secrets/users /srv/jupyterhub/secrets/users
-COPY ./secrets/admins /srv/jupyterhub/secrets/admins
+COPY ./secrets/admins* ./secrets/users* /srv/jupyterhub/secrets/

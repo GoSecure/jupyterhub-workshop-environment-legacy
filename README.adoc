@@ -39,7 +39,6 @@ If you are using a custom notebook (it is what's by default here, see `.env` for
   docker build -t workshop-notebook .
   cd ../../
   make notebook_image
-  make build
 
 === Setup GitHub's OAuth
 
@@ -51,6 +50,10 @@ By default our setup is open to anyone to create an account like for an open
 workshop with no pre-registrations (different options available below). Setup
 the users with admin privileges in advance by writing the github usernames to
 the `secrets/admins` file (one per line).
+
+* Build docker-compose now that everything is ready:
+
+    make
 
 
 === Add TLS Certificates with Lets Encrypt
@@ -73,6 +76,7 @@ the `secrets/admins` file (one per line).
 Everything should work:
 
     docker-compose up
+
 
 == Optional: Only allow specific users
 
