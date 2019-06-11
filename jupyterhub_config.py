@@ -88,14 +88,16 @@ try:
 except FileNotFoundError:
     pass
 
-# previous code
-#pwd = os.path.dirname(__file__)
-#with open(os.path.join(pwd, 'userlist')) as f:
-#    for line in f:
-#        if not line:
-#            continue
-#        parts = line.split()
-#        name = parts[0]
-#        whitelist.add(name)
-#        if len(parts) > 1 and parts[1] == 'admin':
-#            admin.add(name)
+# Users lists (if none specified, everyone allowed)
+try:
+    with open(os.path.join(pwd, 'secrets', 'users')) as f:
+        for line in f:
+            if not line:
+                continue
+            parts = line.split()
+            name = parts[0]
+            whitelist.add(name)
+            if len(parts) > 1 and parts[1] == 'admin':
+                admin.add(name)
+except FileNotFoundError:
+    pass

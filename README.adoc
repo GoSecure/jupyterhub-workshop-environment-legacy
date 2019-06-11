@@ -74,17 +74,35 @@ Everything should work:
 
     docker-compose up
 
-== Optional: userlists
+== Optional: Only allow specific users
+
+If you create a `secrets/users` file with a list of allowed GitHub usernames,
+only these usernames will be able to sign-up to the server.
+
+When you change that list, you need to restart the JupyterHub container.
+Easiest way to achieve this is to kill the docker-compose environment, 
+run `make` and restart docker-compose.
+
+    <ctrl-d>
+    make
+    docker-compose up
+
+User lists can optionally have an `admin` tag to identify admin users. Ex:
+
+    linus admin
+    obilodeau
+    masarah admin
+
+
+== Optional: Stop Open Registrations
 
 // TODO
+
 
 == Optional: User Instances Exposed to the Internet
 
 // TODO
 
-== Optional: Stop Open Registrations
-
-// TODO
 
 == Special Workshop Files Overlay
 
