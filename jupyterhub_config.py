@@ -10,20 +10,57 @@ c = get_config()
 # avoid having to rebuild the JupyterHub container every time we change a
 # configuration parameter.
 
-# Spawn single-user servers as Docker containers
-c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+# Here we define a special DockerSpawner to be used when we want to expose the
+# Jupyter Notebook straight to the Internet
+from dockerspawner import DockerSpawner
+from jupyterhub.utils import random_port
+from tornado import gen
+
+class custom_spawner(DockerSpawner):
+    @gen.coroutine
+    def get_ip_and_port(self):
+        return self.host_ip, self.port
+
+    @gen.coroutine
+    def start(self, *args, **kwargs):
+        self.port = random_port()
+
+        # Pass the random port picked up to the container. This makes the
+        # reserve-proxy work when in network exposed mode.
+        spawn_cmd = "start-singleuser.sh --port={}".format(self.port)
+        self.extra_create_kwargs.update({"command": spawn_cmd})
+
+        # start the container
+        ret = yield DockerSpawner.start(self, *args, **kwargs)
+        return ret
+
+if os.environ.get('DOCKER_NOTEBOOK_EXPOSE_NETWORK', False):
+    # Spawn single-user servers with their network exposed as Docker containers
+    c.JupyterHub.spawner_class = custom_spawner
+    network_name = 'host'
+    c.DockerSpawner.use_internal_ip = False
+
+else:
+    # Spawn single-user servers as Docker containers
+    c.JupyterHub.spawner_class = 'dockerspawner.DockerSpawner'
+
+    # JupyterHub requires a single-user instance of the Notebook server, so we
+    # default to using the `start-singleuser.sh` script included in the
+    # jupyter/docker-stacks *-notebook images as the Docker run command when
+    # spawning containers.  Optionally, you can override the Docker run command
+    # using the DOCKER_SPAWN_CMD environment variable.
+    spawn_cmd = os.environ.get('DOCKER_SPAWN_CMD', "start-singleuser.sh")
+    c.DockerSpawner.extra_create_kwargs.update({ 'command': spawn_cmd })
+
+    # Connect containers to this Docker network
+    network_name = os.environ['DOCKER_NETWORK_NAME']
+    c.DockerSpawner.use_internal_ip = True
+
+
 # Spawn containers from this image
-c.DockerSpawner.container_image = os.environ['DOCKER_NOTEBOOK_IMAGE']
-# JupyterHub requires a single-user instance of the Notebook server, so we
-# default to using the `start-singleuser.sh` script included in the
-# jupyter/docker-stacks *-notebook images as the Docker run command when
-# spawning containers.  Optionally, you can override the Docker run command
-# using the DOCKER_SPAWN_CMD environment variable.
-spawn_cmd = os.environ.get('DOCKER_SPAWN_CMD', "start-singleuser.sh")
-c.DockerSpawner.extra_create_kwargs.update({ 'command': spawn_cmd })
-# Connect containers to this Docker network
-network_name = os.environ['DOCKER_NETWORK_NAME']
-c.DockerSpawner.use_internal_ip = True
+c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
+
+# Network name
 c.DockerSpawner.network_name = network_name
 # Pass the network name as argument to spawned containers
 c.DockerSpawner.extra_host_config = { 'network_mode': network_name }
@@ -46,9 +83,16 @@ c.DockerSpawner.remove_containers = True
 # For debugging arguments passed to spawned containers
 c.DockerSpawner.debug = True
 
-# User containers will access hub by container name on the Docker network
-c.JupyterHub.hub_ip = 'jupyterhub'
-c.JupyterHub.hub_port = 8080
+# if Network is exposed
+if os.environ.get('DOCKER_NOTEBOOK_EXPOSE_NETWORK', False):
+    from jupyter_client.localinterfaces import public_ips
+    c.JupyterHub.hub_ip = public_ips()[0]
+    c.DockerSpawner.host_ip = os.environ['HOST_IP']
+# otherwise
+else:
+    # User containers will access hub by container name on the Docker network
+    c.JupyterHub.hub_ip = 'jupyterhub'
+    c.JupyterHub.hub_port = 8080
 
 # TLS config
 c.JupyterHub.port = 443

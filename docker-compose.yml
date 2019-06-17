@@ -41,6 +41,8 @@ services:
     environment:
       # All containers will join this network
       DOCKER_NETWORK_NAME: ${DOCKER_NETWORK_NAME}
+      # Are the notebooks from this hub exposed?
+      DOCKER_NOTEBOOK_EXPOSE_NETWORK: ${DOCKER_NOTEBOOK_EXPOSE_NETWORK}
       # JupyterHub will spawn this Notebook image for users
       DOCKER_NOTEBOOK_IMAGE: ${LOCAL_NOTEBOOK_IMAGE}
       # Notebook directory inside user image
@@ -53,6 +55,7 @@ services:
     env_file:
       - secrets/postgres.env
       - secrets/oauth.env
+      - secrets/context.env
     command: >
       jupyterhub -f /srv/jupyterhub/jupyterhub_config.py
 

@@ -105,7 +105,10 @@ User lists can optionally have an `admin` tag to identify admin users. Ex:
 
 == Optional: User Instances Exposed to the Internet
 
-// TODO
+Uncomment the following line in the `.env` file and make sure to rebuild the
+`hub` container.
+
+    DOCKER_NOTEBOOK_EXPOSE_NETWORK=true
 
 
 == Special Workshop Files Overlay

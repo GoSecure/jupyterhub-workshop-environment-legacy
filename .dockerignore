@@ -1,5 +1,8 @@
 .git
 .gitignore
+docs/
 examples/
 internal/
-README.md
+labs-source/
+README.adoc
+README.upstream.md
