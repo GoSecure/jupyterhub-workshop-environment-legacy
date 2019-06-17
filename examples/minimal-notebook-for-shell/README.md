@@ -24,7 +24,10 @@ when you run the JupyterHub container.  For example, run the following
 export DOCKER_NOTEBOOK_IMAGE=workshop-notebook
 
 # bring down the JupyterHub container, if running
+# <ctrl-D> or
 docker-compose down
+
+make notebook_image
 
 # bring it back up
 docker-compose up -d

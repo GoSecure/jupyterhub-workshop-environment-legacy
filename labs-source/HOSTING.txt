@@ -1,0 +1,18 @@
+Reverse shell recipe:
+
+    nc -l -p 4201 -v -n
+
+To connect:
+
+    nc shell-workshop.gosec.co 4201 
+
+Web server:
+
+    python3 -m http.server 4202
+
+To connect:
+
+    wget http://shell-workshop.gosec.co:4202/
+
+
+If it says address in use, pick another port.

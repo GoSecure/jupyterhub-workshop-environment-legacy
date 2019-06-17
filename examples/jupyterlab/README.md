@@ -24,7 +24,10 @@ Then run the following **from the root directory** of this repository:
 
 ```
 # bring down the JupyterHub container, if running
+# <ctrl-D> or
 docker-compose down
+
+make notebook_image
 
 # bring it back up
 docker-compose up -d
