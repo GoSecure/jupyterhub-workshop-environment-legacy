@@ -43,7 +43,6 @@ Vagrant.configure("2") do |config|
 
   # Provision tooling
   config.vm.provision "shell", inline: <<-SCRIPT
-    apt install -y python
     if ! type docker >/dev/null; then
         echo -e "\n\n========= installing docker..."
         curl -sL https://get.docker.io/ | sh
@@ -51,10 +50,7 @@ Vagrant.configure("2") do |config|
         curl -sL https://github.com/docker/cli/raw/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker
         adduser vagrant docker
     fi
-    if ! type pip >/dev/null; then
-        echo -e "\n\n========= installing pip..."
-        curl -sk https://bootstrap.pypa.io/get-pip.py | python
-    fi
+
     if ! type docker-compose >/dev/null; then
         echo -e "\n\n========= installing docker-compose..."
         curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
