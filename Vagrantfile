@@ -41,8 +41,9 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/vagrant", type: "rsync",
     rsync__exclude: [".git/", "secrets/digitalocean.env"]
 
-  # docker / docker-compose provisioning
+  # Provision tooling
   config.vm.provision "shell", inline: <<-SCRIPT
+    apt install -y python
     if ! type docker >/dev/null; then
         echo -e "\n\n========= installing docker..."
         curl -sL https://get.docker.io/ | sh
