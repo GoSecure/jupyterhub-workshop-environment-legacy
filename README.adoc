@@ -4,6 +4,10 @@
 
 === Create the Server
 
+Ensure that you have the digitalocean provider installed:
+
+    vagrant plugin install vagrant-digitalocean
+
 Spin the droplet using vagrant. Make sure to define these secrets in
 `secrets/digitalocean.env`:
 
@@ -19,6 +23,7 @@ Spin the droplet using vagrant. Make sure to define these secrets in
 To spin the droplet:
 
     vagrant up
+
 
 === Setup on the Server
 
