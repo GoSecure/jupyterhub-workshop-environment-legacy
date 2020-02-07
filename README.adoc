@@ -2,14 +2,76 @@
 
 == Setup Instructions
 
+=== Prepare for Deployment
+
+These steps should be done locally before provisioning the JupterHub
+server to facilitate deployment.
+
+==== Setup GitHub Authentication
+
+Create a GitHub application reflecting the purpose of your JupyterHub
+workshop. It will be used to allow users to login and gain access to
+the workshop servers. You should know the following information ahead
+of time:
+
+* Workshop Name (Application Name)
+* Workshop Server URL (Doesn't need to resolve yet)
+* Workshop Description
+* Workshop Icon if desired.
+
+Follow the instructions under the *Authenticator setup* section of
+`README.upstream.md` and create `secrets/oauth.env` with the following
+content:
+
+  GITHUB_CLIENT_ID=<github_client_id>
+  GITHUB_CLIENT_SECRET=<github_client_secret>
+  OAUTH_CALLBACK_URL=https://<myhost.mydomain>/hub/oauth_callback
+
+*NOTE*: Applications for workshops should be created under the GoSecure organization at
+https://github.com/organizations/GoSecure/settings/applications/new
+
+Ask organisation admin to create the application with the required information.
+
+By default our setup is open to anyone to create an account like for an open
+workshop with no pre-registrations (different options available below). Setup
+the users with admin privileges in advance by writing the github usernames to
+the `secrets/admins` file (one per line).
+
+==== Setup Administrator Accounts
+
+Add one or more accounts in `secrets/admins`. These accounts will be
+granted full access to the Jupyter Notebook.
+
+
+==== Workshop Files: Overlay Filesystem
+
+There are two ways to expose files to the workshop attendees.
+
+.Read-only shared with all participants
+
+All users will have access to a directory in their own homes (`/home/jovyan/`)
+called `workshop/` that will be mapped to the servers' `/srv/workshop/` via a
+docker volume.
+
+Changes made in `/srv/workshop/*` will be reflected instantly for all participants.
+
+
+.Files for participants (writable and executable)
+
+On container creation, a directory called `labs/` will be created and
+populated from the servers' `/srv/workshop/labs-source/` content.
+
+This will happen only once per user. If you need to re-populate it, you need
+to delete the user' files in his volume. These are visible under:
+`/var/lib/docker/volumes/jupyterhub-user-<username>/_data/`
+
 === Create the Server
 
-Ensure that you have the digitalocean provider installed:
+Ensure that you have the Digital Ocean provider installed:
 
     vagrant plugin install vagrant-digitalocean
 
-Spin the droplet using vagrant. Make sure to define these secrets in
-`secrets/digitalocean.env`:
+Configure your Digital Ocean credentials in `secrets/digitalocean.env`:
 
     DO_DROPLET_NAME=jupyterhub-workshop
     DO_SSH_KEY_NAME=<ssh key nickname in digital ocean>
@@ -20,13 +82,13 @@ Spin the droplet using vagrant. Make sure to define these secrets in
     # for setup, 4 CPU and 8GiB of RAM is nice, scale down after
     DO_SIZE=c-4
 
-To spin the droplet:
+Spawn and provision the droplet. It might take a while to setup and
+provision, so be patient. The repository should be synchronized to
+`/vagrant`
 
     vagrant up
 
-It might take a while to setup and provision, so be patient. The repository should be synchronized to `/vagrant`
-
-=== Setup on the Server
+=== Server-Side Configuration
 
 To connect to the server via SSH, run:
 
@@ -41,9 +103,8 @@ To connect to the server via SSH, run:
     so verify the keys are valid there in addition to standard
     file paths.
 
-
-Then you need to install the following gems on your workstation in
-order to support ed25519 private keys for SSH:
+Then you need to install the following gems on your local workstation
+in order to support ed25519 private keys for SSH:
 
     sudo gem install rbnacl --no-user-install -i /opt/vagrant/embedded/gems;
     sudo gem install bcrypt_pbkdf --no-user-install -i /opt/vagrant/embedded/gems;
@@ -52,11 +113,7 @@ order to support ed25519 private keys for SSH:
 
 See https://github.com/hashicorp/vagrant/issues/4367 for more dtails.
 
-Last few things
-
-    apt install make
-    cd /vagrant/
-    make
+==== Build Notebook Image
 
 If you are using a custom notebook (it is what's by default here, see `.env` for name), you need to build it and rebuild notebook_image:
 
@@ -66,28 +123,9 @@ If you are using a custom notebook (it is what's by default here, see `.env` for
   cd ../../
   make notebook_image
 
-=== Setup GitHub's OAuth
+==== Configure TLS and HTTPS with Certbot
 
-Follow the instructions under the *Authenticator setup* section of `README.upstream.md` file.
-
-Our GitHub OAuth should be done under here: https://github.com/organizations/GoSecure/settings/applications/
-
-By default our setup is open to anyone to create an account like for an open
-workshop with no pre-registrations (different options available below). Setup
-the users with admin privileges in advance by writing the github usernames to
-the `secrets/admins` file (one per line).
-
-* Build docker-compose now that everything is ready:
-
-    make
-
-
-=== Add TLS Certificates with Lets Encrypt
-
-* install certbot
-
-    apt install certbot
-
+* Ensure that your domain name resolves to the created droplet public address.
 * create certs using certbot and its temp webserver (make sure docker-compose
   is shut down before)
 
@@ -95,14 +133,21 @@ the `secrets/admins` file (one per line).
     cp /etc/letsencrypt/live/<domain-name>/fullchain.pem secrets/jupyterhub.crt
     cp /etc/letsencrypt/live/<domain-name>/privkey.pem secrets/jupyterhub.key
 
-* Rebuild docker-compose with updated secrets and certs
 
+==== Launch the Notebook Server
+
+After everything is configured, you can spawn the notebook server with the following commands:
+
+      cd /vagrant
+      make
+      docker-compose up
+
+Whenever changing the secrets or environment variables, rebuiding and
+relaunching the images is required:
+
+    docker-compose down
     make
-
-Everything should work:
-
     docker-compose up
-
 
 == Optional: Only allow specific users
 
@@ -137,22 +182,3 @@ Uncomment the following line in the `.env` file and make sure to rebuild the
     DOCKER_NOTEBOOK_EXPOSE_NETWORK=true
 
 
-== Special Workshop Files Overlay
-
-.Read-only shared with all participants
-
-All users will have access to a directory in their own homes (`/home/jovyan/`)
-called `workshop/` that will be mapped to the servers' `/srv/workshop/` via a
-docker volume.
-
-Changes made there will be reflected instantly.
-
-
-.Files for participants (writable and executable)
-
-On container creation, a directory called `labs/` will be created and
-populated from the servers' `/srv/workshop/labs-source/`.
-
-This will happen only once per user. If you need to re-populate it, you need
-to delete the user' files in his volume. These are visible under:
-`/var/lib/docker/volumes/jupyterhub-user-<username>/_data/`
