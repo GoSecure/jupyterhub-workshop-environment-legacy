@@ -38,7 +38,10 @@ Vagrant.configure("2") do |config|
     provider.ssh_key_name = secrets["DO_SSH_KEY_NAME"]
   end
 
-  # docker / docker-compose provisioning
+  config.vm.synced_folder ".", "/vagrant", type: "rsync",
+    rsync__exclude: [".git/", "secrets/digitalocean.env"]
+
+  # Provision tooling
   config.vm.provision "shell", inline: <<-SCRIPT
     if ! type docker >/dev/null; then
         echo -e "\n\n========= installing docker..."
@@ -47,10 +50,7 @@ Vagrant.configure("2") do |config|
         curl -sL https://github.com/docker/cli/raw/master/contrib/completion/bash/docker > /etc/bash_completion.d/docker
         adduser vagrant docker
     fi
-    if ! type pip >/dev/null; then
-        echo -e "\n\n========= installing pip..."
-        curl -sk https://bootstrap.pypa.io/get-pip.py | python
-    fi
+
     if ! type docker-compose >/dev/null; then
         echo -e "\n\n========= installing docker-compose..."
         curl -L https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
@@ -58,6 +58,9 @@ Vagrant.configure("2") do |config|
         echo -e "\n\n========= installing docker-compose command completion..."
         curl -sL https://raw.githubusercontent.com/docker/compose/$(docker-compose --version | awk 'NR==1{print $NF}')/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose
     fi
+
+    echo -e "\n\n========= Installing utilities"
+    apt install -y make certbot
   SCRIPT
 
   # TODO
