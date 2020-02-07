@@ -20,18 +20,17 @@ secrets/postgres.env:
 	@echo "POSTGRES_PASSWORD=$(shell openssl rand -hex 32)" > $@
 
 secrets/oauth.env:
-	@echo "Need oauth.env file in secrets with GitHub parameters"
-	@echo "Make sure you've configured OAuth"
+	@echo "oauth.env file is missing! Did you create and configure the GitHub OAuth integration?"
 	@exit 1
 
 secrets/jupyterhub.crt:
-	@echo "Need an SSL certificate in secrets/jupyterhub.crt"
-	@echo "Make sure you've generated TLS certificates"
+	@echo "TLS certificates are missing, did you run certbot?"
+	@echo "Need TLS certificate in secrets/jupyterhub.crt"
 	@exit 1
 
 secrets/jupyterhub.key:
-	@echo "Need an SSL key in secrets/jupyterhub.key"
-	@echo "Make sure you've generated TLS certificates"
+	@echo "TLS certificates are missing, did you run certbot?"
+	@echo "Need TLS private key in secrets/jupyterhub.key"
 	@exit 1
 
 # Used if Notebook are exposed to the network (see .env or README.adoc for details)
