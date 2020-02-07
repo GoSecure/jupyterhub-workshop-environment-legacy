@@ -24,12 +24,33 @@ To spin the droplet:
 
     vagrant up
 
+It might take a while to setup and provision, so be patient. The repository should be synchronized to `/vagrant`
 
 === Setup on the Server
 
-Connect
+To connect to the server via SSH, run:
 
     vagrant ssh
+
+*NOTE*: If you are having trouble with the following error:
+
+    The private key you're attempting to use with this Vagrant box uses
+    an unsupported encryption type. The SSH library Vagrant uses does not support
+    this key type. Please use `ssh-rsa` or `ssh-dss` instead. Note that
+    sometimes keys in your ssh-agent can interfere with this as well,
+    so verify the keys are valid there in addition to standard
+    file paths.
+
+
+Then you need to install the following gems on your workstation in
+order to support ed25519 private keys for SSH:
+
+    sudo gem install rbnacl --no-user-install -i /opt/vagrant/embedded/gems;
+    sudo gem install bcrypt_pbkdf --no-user-install -i /opt/vagrant/embedded/gems;
+    sudo gem install rbnacl-libsodium --no-user-install -i /opt/vagrant/embedded/gems;
+    sudo gem install ed25519 --no-user-install -i /opt/vagrant/embedded/gems;
+
+See https://github.com/hashicorp/vagrant/issues/4367 for more dtails.
 
 Last few things
 
