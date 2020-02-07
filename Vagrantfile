@@ -38,6 +38,9 @@ Vagrant.configure("2") do |config|
     provider.ssh_key_name = secrets["DO_SSH_KEY_NAME"]
   end
 
+  config.vm.synced_folder ".", "/vagrant", type: "rsync",
+    rsync__exclude: [".git/", "secrets/digitalocean.env"]
+
   # docker / docker-compose provisioning
   config.vm.provision "shell", inline: <<-SCRIPT
     if ! type docker >/dev/null; then
