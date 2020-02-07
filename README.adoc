@@ -65,7 +65,7 @@ This will happen only once per user. If you need to re-populate it, you need
 to delete the user' files in his volume. These are visible under:
 `/var/lib/docker/volumes/jupyterhub-user-<username>/_data/`
 
-=== Create the Server
+=== Deploying the Server
 
 Ensure that you have the Digital Ocean provider installed:
 
@@ -115,21 +115,20 @@ See https://github.com/hashicorp/vagrant/issues/4367 for more dtails.
 
 ==== Build Notebook Image
 
-If you are using a custom notebook, you need to build it and rebuild
-notebook_image: The default per-user image is called `jupyterhub-user`.
-It can be changed with the `LOCAL_NOTEBOOK_IMAGE` key in `.env`.
+If you are using a custom notebook, you need to build it first and rebuild
+the jupyterhub-user image. The base image that jupyterhub-user will
+use is configured with the `DOCKER_NOTEBOOK_IMAGE` key in `.env`.
 
   cd examples/custom-notebook-server/
   # <change what you need or use another example>
-  docker build -t jupyterhub-user .
+  docker build -t workshop-notebook .
   cd ../../
   make notebook_image
 
 ==== Configure TLS and HTTPS with Certbot
 
 * Ensure that your domain name resolves to the created droplet public address.
-* create certs using certbot and its temp webserver (make sure docker-compose
-  is shut down before)
+* Create certificates using certbot (make sure docker-compose is not running)
 
     certbot certonly --standalone -d <domain-name>
     cp /etc/letsencrypt/live/<domain-name>/fullchain.pem secrets/jupyterhub.crt
@@ -144,7 +143,7 @@ After everything is configured, you can spawn the notebook server with the follo
       make
       docker-compose up
 
-Whenever changing the secrets or environment variables, rebuiding and
+Whenever changing the secrets or environment variables, rebuilding and
 relaunching the images is required:
 
     docker-compose down
