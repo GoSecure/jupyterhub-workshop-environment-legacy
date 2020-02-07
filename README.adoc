@@ -115,11 +115,13 @@ See https://github.com/hashicorp/vagrant/issues/4367 for more dtails.
 
 ==== Build Notebook Image
 
-If you are using a custom notebook (it is what's by default here, see `.env` for name), you need to build it and rebuild notebook_image:
+If you are using a custom notebook, you need to build it and rebuild
+notebook_image: The default per-user image is called `jupyterhub-user`.
+It can be changed with the `LOCAL_NOTEBOOK_IMAGE` key in `.env`.
 
   cd examples/custom-notebook-server/
   # <change what you need or use another example>
-  docker build -t workshop-notebook .
+  docker build -t jupyterhub-user .
   cd ../../
   make notebook_image
 
