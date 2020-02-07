@@ -58,6 +58,9 @@ Vagrant.configure("2") do |config|
         echo -e "\n\n========= installing docker-compose command completion..."
         curl -sL https://raw.githubusercontent.com/docker/compose/$(docker-compose --version | awk 'NR==1{print $NF}')/contrib/completion/bash/docker-compose > /etc/bash_completion.d/docker-compose
     fi
+
+    echo -e "\n\n========= Installing utilities"
+    apt install -y make certbot
   SCRIPT
 
   # TODO
