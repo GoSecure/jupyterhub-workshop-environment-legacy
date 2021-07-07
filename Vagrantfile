@@ -60,7 +60,7 @@ Vagrant.configure("2") do |config|
     fi
 
     echo -e "\n\n========= Installing utilities"
-    apt install -y make certbot
+    apt install -y make certbot rng-tools
   SCRIPT
 
   # TODO
