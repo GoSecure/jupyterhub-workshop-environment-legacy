@@ -182,4 +182,15 @@ Uncomment the following line in the `.env` file and make sure to rebuild the
 
     DOCKER_NOTEBOOK_EXPOSE_NETWORK=true
 
+Please double check that `secrets/context.env` has the correct `HOST_IP` in it.
+The Makefile is a little bit brittle in that regard.
+
+
+== Operational Procedures
+
+=== Add a user to a running instance
+
+Add GitHub username to `secrets/users`. Restart the jupyterhub with:
+
+    docker-compose up -d --build hub
 
