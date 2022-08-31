@@ -1,6 +1,10 @@
-secrets/
-userlist
-.DS_Store
+# Secrets
+/jupyterhub/secrets/
+/jupyterhub/userlist
+/terraform.tfvars
+/tmp_sshkey
 
-# Vagrant
-/.vagrant/
+# Terraform
+/.terraform/
+/.terraform.lock.hcl
+/terraform.tfstate*

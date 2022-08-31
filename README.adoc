@@ -67,51 +67,35 @@ to delete the user' files in his volume. These are visible under:
 
 === Deploying the Server
 
-Ensure that you have the Digital Ocean provider installed:
+Ensure that you have a recent version of Terraform installed and get it ready:
 
-    vagrant plugin install vagrant-digitalocean
+    terraform init
 
-Configure your Digital Ocean credentials in `secrets/digitalocean.env`:
+Configure your Digital Ocean credentials and other settings in `terraform.tfvars`:
 
-    DO_DROPLET_NAME=jupyterhub-workshop
-    DO_SSH_KEY_NAME=<ssh key nickname in digital ocean>
-    DO_SSH_PRIVATE_KEY=<path to ssh private key set-up with digital ocean>
-    DO_TOKEN=<digital ocean token>
-    # digital ocean region names like: nyc3, lon1, etc.
-    DO_REGION=fra1
-    # for setup, 4 CPU and 8GiB of RAM is nice, scale down after
-    DO_SIZE=c-4
+    # the following values are used as tags in digital ocean so only lowercase, dash and underscore allowed
+    workshop_name = "<workshop-name>"
+    tag_owner = "<username>"
+    tag_event = "<event-name>"
+    do_token = "<your DO token>"
+    # default is small 1 CPU and 2GB RAM
+    #instance_size = "c-4"
 
 Spawn and provision the droplet. It might take a while to setup and
 provision, so be patient. The repository should be synchronized to
-`/vagrant`
+`/srv`
 
-    vagrant up
+    terraform validate
+    terraform plan
+    terraform apply
+
 
 === Server-Side Configuration
 
 To connect to the server via SSH, run:
 
-    vagrant ssh
+    ./bin/ssh-connect.sh
 
-*NOTE*: If you are having trouble with the following error:
-
-    The private key you're attempting to use with this Vagrant box uses
-    an unsupported encryption type. The SSH library Vagrant uses does not support
-    this key type. Please use `ssh-rsa` or `ssh-dss` instead. Note that
-    sometimes keys in your ssh-agent can interfere with this as well,
-    so verify the keys are valid there in addition to standard
-    file paths.
-
-Then you need to install the following gems on your local workstation
-in order to support ed25519 private keys for SSH:
-
-    sudo gem install rbnacl --no-user-install -i /opt/vagrant/embedded/gems;
-    sudo gem install bcrypt_pbkdf --no-user-install -i /opt/vagrant/embedded/gems;
-    sudo gem install rbnacl-libsodium --no-user-install -i /opt/vagrant/embedded/gems;
-    sudo gem install ed25519 --no-user-install -i /opt/vagrant/embedded/gems;
-
-See https://github.com/hashicorp/vagrant/issues/4367 for more dtails.
 
 ==== Build Notebook Image
 
@@ -139,7 +123,7 @@ use is configured with the `DOCKER_NOTEBOOK_IMAGE` key in `.env`.
 
 After everything is configured, you can spawn the notebook server with the following commands:
 
-      cd /vagrant
+      cd /srv/jupyterhub/
       make
       docker-compose up
 

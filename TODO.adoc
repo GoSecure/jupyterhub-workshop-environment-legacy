@@ -1,3 +1,0 @@
-= TODO
-
-* vagrant provision should install make
