@@ -8,7 +8,7 @@ FROM jupyter/scipy-notebook:latest
 # Install mitmproxy dependencies, tshark, gnu parallel (requires PPA), a python2 env
 USER root
 RUN apt-get update && \
-    apt-get install -y software-properties-common python3-dev python3-pip python-dev libffi-dev libssl-dev libjpeg8-dev tshark manpages man-db whois netcat-traditional dnsutils && \
+    apt-get install -y software-properties-common python3-dev python3-pip libffi-dev libssl-dev libjpeg8-dev tshark manpages man-db whois netcat-traditional dnsutils && \
     apt-get update && \
     apt-get install -y parallel && \
     apt-get clean && \
