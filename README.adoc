@@ -178,3 +178,34 @@ Add GitHub username to `secrets/users`. Restart the jupyterhub with:
 
     docker-compose up -d --build hub
 
+
+== Debugging
+
+=== Logging
+
+In `jupyter_config.py`, setting `log_level` to `'DEBUG'` will give more information in the docker-compose logs:
+
+    c.JupyterHub.log_level = 'DEBUG'
+
+
+=== Troubleshooting User Container Failure
+
+If you get strange errors when the user container tries to start, make sure that it can start properly.
+Errors can be as obscure as: "traitlets.traitlets.TraitError: The 'ip' trait of a Server instance must be a unicode string, but a value of None <class 'NoneType'> was specified".
+Disable the container removal and inspect the failed container logs with the following steps:
+
+* Disable container removal by making sure that the DockerSpawner is configured properly.
+  In `jupyter_config.py` ensure that this configuration is present (and not overridden after):
+
+    c.DockerSpawner.remove = False
+
+* Load the new config:
+
+    docker-compose down
+    make
+    docker-compose up
+
+* Upon container creation failure now you can see the containers being left dangling:
+
+    docker ps
+    docker logs jupyter-obilodeau
