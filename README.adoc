@@ -40,7 +40,7 @@ the `secrets/admins` file (one per line).
 ==== Setup Administrator Accounts
 
 Add one or more accounts in `secrets/admins`. These accounts will be
-granted full access to the Jupyter Notebook.
+granted full access to the JupyterHub.
 
 
 ==== Workshop Files: Overlay Filesystem
@@ -119,9 +119,9 @@ use is configured with the `DOCKER_NOTEBOOK_IMAGE` key in `.env`.
     cp /etc/letsencrypt/live/<domain-name>/privkey.pem secrets/jupyterhub.key
 
 
-==== Launch the Notebook Server
+==== Launch the Jupyter Server
 
-After everything is configured, you can spawn the notebook server with the following commands:
+After everything is configured, you can spawn the jupyter server with the following commands:
 
       cd /srv/jupyterhub/
       make
@@ -133,6 +133,15 @@ relaunching the images is required:
     docker-compose down
     make
     docker-compose up
+
+
+== Components
+
+Once authenticated the user has access to a JupyterLab environment by default.
+A Jupyter Notebook environment is available by changing the URL from `/user/<username>/lab` to `/user/<username>/tree`.
+
+The administrative interface is available at `/hub/admin` for users who are allowed to use it.
+
 
 == Optional: Only allow specific users
 
