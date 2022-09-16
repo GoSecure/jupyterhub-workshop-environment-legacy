@@ -178,6 +178,28 @@ Add GitHub username to `secrets/users`. Restart the jupyterhub with:
 
     docker-compose up -d --build hub
 
+=== Upgrading JupyterHub
+
+Read https://github.com/jupyterhub/jupyterhub/blob/main/docs/source/changelog.md[the changelog] and the
+https://github.com/jupyterhub/jupyterhub/blob/main/docs/source/admin/upgrading.rst[upgrade notes].
+
+Tell the users to save and shutdown their notebooks and that they could lose data if they don't.
+Shutdown all notebooks from the JupyterHub admin interface.
+Shutdown all containers with `docker-compose down`.
+
+Make sure to backup the volumes (`/var/lib/docker/volumes/jupyter*`) and your docker-compose directory just in case.
+
+Change the JUPYTERHUB_VERSION in `.env` and adjust your `jupyterhub_config.py` if needed.
+
+Rebuild your user container (usually one in `examples/`), follow `README.md` instructions.
+Make sure to do a `make notebook_image` to create the jupyterhub wrapper container for it.
+
+Rebuild the JupyterHub container: `docker-compose build hub`
+
+If a database schema change is required (changelog should tell), run: `docker-compose run hub jupyterhub upgrade-db`
+
+Then start the environment as usual with: `docker-compose up`
+
 
 == Debugging
 
