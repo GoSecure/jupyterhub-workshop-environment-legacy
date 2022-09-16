@@ -117,9 +117,9 @@ c.JupyterHub.db_url = 'postgresql://postgres:{password}@{host}/{db}'.format(
     db=os.environ['POSTGRES_DB'],
 )
 
-# Whitlelist users and admins
-# NOTE: an empty whitelist means everyone is allowed to create an account
-c.Authenticator.whitelist = whitelist = set()
+# Setup users and admins
+# NOTE: an empty allowed_users means everyone is allowed to create an account
+c.Authenticator.allowed_users = allowed_users = set()
 c.Authenticator.admin_users = admin = set()
 c.JupyterHub.admin_access = True
 pwd = os.path.dirname(__file__)
@@ -142,7 +142,7 @@ try:
                 continue
             parts = line.split()
             name = parts[0]
-            whitelist.add(name)
+            allowed_users.add(name)
             if len(parts) > 1 and parts[1] == 'admin':
                 admin.add(name)
 except FileNotFoundError:
