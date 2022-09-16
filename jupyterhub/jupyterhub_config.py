@@ -38,8 +38,8 @@ class custom_spawner(DockerSpawner):
 if os.environ.get('DOCKER_NOTEBOOK_EXPOSE_NETWORK', False):
     # Spawn single-user servers with their network exposed as Docker containers
     c.JupyterHub.spawner_class = custom_spawner
-    network_name = 'host'
-    c.DockerSpawner.use_internal_ip = False
+    c.DockerSpawner.network_name = 'host'
+    c.DockerSpawner.use_internal_ip = True
 
 else:
     # Spawn single-user servers as Docker containers
@@ -54,17 +54,15 @@ else:
     c.DockerSpawner.extra_create_kwargs.update({ 'command': spawn_cmd })
 
     # Connect containers to this Docker network
-    network_name = os.environ['DOCKER_NETWORK_NAME']
-    c.DockerSpawner.use_internal_ip = True
+    c.DockerSpawner.network_name = os.environ['DOCKER_NETWORK_NAME']
+    #c.DockerSpawner.use_internal_ip = True
 
 
 # Spawn containers from this image
 c.DockerSpawner.image = os.environ['DOCKER_NOTEBOOK_IMAGE']
 
-# Network name
-c.DockerSpawner.network_name = network_name
 # Pass the network name as argument to spawned containers
-c.DockerSpawner.extra_host_config = { 'network_mode': network_name }
+c.DockerSpawner.extra_host_config = { 'network_mode': c.DockerSpawner.network_name }
 # Explicitly set notebook directory because we'll be mounting a host volume to
 # it.  Most jupyter/docker-stacks *-notebook images run the Notebook server as
 # user `jovyan`, and set the notebook directory to `/home/jovyan/work`.
