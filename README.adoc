@@ -1,5 +1,17 @@
 = README
 
+Opionated JupyterHub deployment for workshops relying on GitHub for Authentication
+
+Features:
+
+* Supports JupyterLab and Jupyter Notebook (Python and Terminals)
+* Read-only shared files to all users (in users' homes)
+* Users have their own copies of notebook, created on first login from template directory
+* Each user is in its own container which can be customized
+* Server deployed and managed by Terraform
+
+Forked from https://github.com/jupyterhub/jupyterhub-deploy-docker in 2017
+
 == Setup Instructions
 
 === Prepare for Deployment
@@ -27,8 +39,8 @@ content:
   GITHUB_CLIENT_SECRET=<github_client_secret>
   OAUTH_CALLBACK_URL=https://<myhost.mydomain>/hub/oauth_callback
 
-*NOTE*: Applications for workshops should be created under the GoSecure organization at
-https://github.com/organizations/GoSecure/settings/applications/new
+*NOTE*: Applications for workshops should be created under your organization at
+https://github.com/organizations/<orgname>/settings/applications/new
 
 Ask organisation admin to create the application with the required information.
 
