@@ -1,5 +1,9 @@
 = README
 
+NOTE: This repository has been archived.
+This setup required changes on every major JupyterHub release and was broken again when Notebook v7 arrived.
+Our currently maintained workshop environment is built on top of https://tljh.jupyter.org/[The Littlest JupyterHub (tljh)] and should be available here: https://github.com/GoSecure/jupyterhub-workshop-environment
+
 Opionated JupyterHub deployment for workshops relying on GitHub for Authentication
 
 Features:
